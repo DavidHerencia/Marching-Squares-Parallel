@@ -31,12 +31,12 @@ struct CellOutput
 };
 
 // Funciones device para Marching Squares
-__device__ double fromIndexSpace(int index, double min_v, double max_v, int grid_size)
+__device__ double cudaFromIndexSpace(int index, double min_v, double max_v, int grid_size)
 {
     return min_v + (max_v - min_v) * double(index) / double(grid_size);
 }
 
-__device__ double interp(double A, double B)
+__device__ double cudaInterp(double A, double B)
 {
     double diff = A - B;
     if (fabs(diff) < 1e-12)
@@ -70,20 +70,20 @@ __global__ void cudaMarchingSquares(int grid_size, double min_v, double max_v, C
     currentCell.line_count = 0;
 
     // Calculate the values at the corners of the grid cell
-    double x_sw = fromIndexSpace(j, min_v, max_v, grid_size);
-    double x_ne = fromIndexSpace(j + 1, min_v, max_v, grid_size);
-    double y_sw = fromIndexSpace(i, min_v, max_v, grid_size);
-    double y_ne = fromIndexSpace(i + 1, min_v, max_v, grid_size);
+    double x_sw = cudaFromIndexSpace(j, min_v, max_v, grid_size);
+    double x_ne = cudaFromIndexSpace(j + 1, min_v, max_v, grid_size);
+    double y_sw = cudaFromIndexSpace(i, min_v, max_v, grid_size);
+    double y_ne = cudaFromIndexSpace(i + 1, min_v, max_v, grid_size);
 
     double A = f_device(x_sw, y_sw); // 0 0
     double B = f_device(x_ne, y_sw); // 1 0
     double C = f_device(x_ne, y_ne); // 1 1
     double D = f_device(x_sw, y_ne); // 0 1
 
-    double d_bottom = interp(A, B) * DT;
-    double d_right = interp(B, C) * DT;
-    double d_top = interp(C, D) * DT;
-    double d_left = interp(D, A) * DT;
+    double d_bottom = cudaInterp(A, B) * DT;
+    double d_right = cudaInterp(B, C) * DT;
+    double d_top = cudaInterp(C, D) * DT;
+    double d_left = cudaInterp(D, A) * DT;
 
     // 4 NEIGHBOURS
     int c_case = ((D > 0) << 3) | ((C > 0) << 2) | ((B > 0) << 1) | (A > 0);

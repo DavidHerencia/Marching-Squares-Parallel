@@ -205,7 +205,7 @@ vector<LineSegment> marching_squares(double (*f)(double, double), int grid_size,
         for (int j = 0; j < h_cell_output[i].line_count; ++j)
         {
             const CudaLineSegment &seg = h_cell_output[i].lines[j];
-            result.emplace_back({seg.x1, seg.y1, seg.x2, seg.y2});
+            result.emplace_back(seg.x1, seg.y1, seg.x2, seg.y2);
         }
     }
     return result;

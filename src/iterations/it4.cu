@@ -1,16 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <vector>
-#include <limits>
-#include <algorithm>
-#include <string>
-#include <iostream>
 #include "../marching_squares.hpp"
+#include <stdio.h>
+#include <vector>
+#include <iostream>
 
-#ifndef STB_IMAGE_WRITE_IMPLEMENTATION
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#endif
-#include "../stb_image_write.hpp"
 
 struct CudaLineSegment
 {

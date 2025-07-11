@@ -1,12 +1,19 @@
 #include <iostream>
 #include <vector>
 #include "marching_squares.hpp"
+#include "simplex_noise.hpp"
 #include "renderer.hpp"
 
 double test_circle(double x, double y)
 {
     return x * x + y * y - 1.0;
 }
+
+double cave_noise(double x, double y)
+{
+    return SimplexNoise::noise(x, y);
+}
+
 
 int main()
 {
@@ -17,7 +24,7 @@ int main()
 
     std::cout << "Running Marching Squares with cave_noise...\n";
 
-    std::vector<LineSegment> lines = marching_squares(test_circle, grid_size, min_v, max_v);
+    std::vector<LineSegment> lines = marching_squares(cave_noise, grid_size, min_v, max_v);
 
     std::string output_file = "circle.png";
     render_to_image(lines, output_file, min_v, max_v, img_size, img_size);

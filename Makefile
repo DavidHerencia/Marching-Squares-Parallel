@@ -76,7 +76,7 @@ benchmark: it1 it2 it3 it4
 		rm -f benchmark_$$iteration.csv; \
 		cd $(BIN_DIR); \
 		for threads in 1 2 4 8 16 32 64 128 256 512; do \
-			for exp in 9 10 11 12 13 14 15 16; do \
+			for exp in 9 10 11 12 13 14; do \
 				size=$$((2**$$exp)); \
 				echo "Testing $$iteration: $$threads threads, grid $$size (2^$$exp)"; \
 				OMP_NUM_THREADS=$$threads ./marching_squares_$$iteration $$size 400 ../benchmark_$$iteration.csv || true; \
@@ -87,7 +87,7 @@ benchmark: it1 it2 it3 it4
 	@echo "=== Benchmark it4 (CUDA) ==="
 	@rm -f benchmark_it4.csv
 	@cd $(BIN_DIR); \
-	for exp in 9 10 11 12 13 14 15 16; do \
+	for exp in 9 10 11 12 13 13; do \
 		size=$$((2**$$exp)); \
 		echo "Testing it4 (CUDA): grid $$size (2^$$exp)"; \
 		./marching_squares_it4 $$size 400 ../benchmark_it4.csv || true; \
@@ -98,8 +98,8 @@ benchmark-it1: it1
 	@echo "=== Benchmark IT1 ==="
 	@rm -f benchmark_it1.csv
 	@cd $(BIN_DIR); \
-	for threads in 1 2 4 8 16 32 64 128 256 512; do \
-		for exp in 9 10 11 12 13 15 16; do \
+	for threads in 1 2 4 8 16 32 64 128; do \
+		for exp in 9 10 11 12 13 14; do \
 			size=$$((2**$$exp)); \
 			echo "Testing it1: $$threads threads, grid $$size (2^$$exp)"; \
 			OMP_NUM_THREADS=$$threads ./marching_squares_it1 $$size 400 ../benchmark_it1.csv || true; \
@@ -111,8 +111,8 @@ benchmark-it2: it2
 	@echo "=== Benchmark IT2 ==="
 	@rm -f benchmark_it2.csv
 	@cd $(BIN_DIR); \
-	for threads in 1 2 4 8 16 32 64 128 256 512; do \
-		for exp in 9 10 11 12 13 15 16; do \
+	for threads in 1 2 4 8 16 32 64 128; do \
+		for exp in 9 10 11 12 13 14; do \
 			size=$$((2**$$exp)); \
 			echo "Testing it2: $$threads threads, grid $$size (2^$$exp)"; \
 			OMP_NUM_THREADS=$$threads ./marching_squares_it2 $$size 400 ../benchmark_it2.csv || true; \
@@ -124,8 +124,8 @@ benchmark-it3: it3
 	@echo "=== Benchmark IT3 ==="
 	@rm -f benchmark_it3.csv
 	@cd $(BIN_DIR); \
-	for threads in 1 2 4 8 16 32 64 128 256 512; do \
-		for exp in 9 10 11 12 13 15 16; do \
+	for threads in 1 2 4 8 16 32 64 128; do \
+		for exp in 9 10 11 12 13 14; do \
 			size=$$((2**$$exp)); \
 			echo "Testing it3: $$threads threads, grid $$size (2^$$exp)"; \
 			OMP_NUM_THREADS=$$threads ./marching_squares_it3 $$size 400 ../benchmark_it3.csv || true; \

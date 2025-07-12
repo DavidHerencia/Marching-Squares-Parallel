@@ -3,6 +3,9 @@
 #include <vector>
 #include <iostream>
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 struct CudaLineSegment
 {
@@ -36,12 +39,50 @@ __device__ double cudaInterp(double A, double B)
     return A / diff;
 }
 
-__device__ double f_device(double x, double y)
+// Device versions of mathematical functions
+__device__ double evaluateFunction(FunctionID funcId, double x, double y)
 {
-    return x * x + y * y - 1.0; // Función de ejemplo: círculo
+    const double PI = 3.14159265358979323846;
+    
+    switch (funcId) {
+        case CIRCLE_FUNC:
+            return x * x + y * y - 1.5;
+            
+        case CHECKERBOARD_FUNC:
+            return sin(2 * PI * x) * sin(2 * PI * y);
+            
+        case TANGENT_FUNC:
+            return tan(((x * x)) + (y * y));
+            
+        case NOISY_FUNC: {
+            double fx = cos(2 * x) * cos(PI * x);
+            double fy = sin(y) * sin(PI * y);
+            return fx + fy;
+        }
+        
+        case WAVE_FUNC:
+            return sin(5 * x) + cos(5 * y) - 0.5;
+            
+        case SPIRAL_FUNC: {
+            double r = sqrt(x * x + y * y);
+            double theta = atan2(y, x);
+            return sin(4 * theta + 2 * r) - 0.3;
+        }
+        
+        case MANDELBROT_FUNC:
+            return x * x * x - 3 * x * y * y + y * y - 1;
+            
+        case CAVE_NOISE_FUNC:
+            // Simplified noise function - for full SimplexNoise we'd need to port the entire implementation
+            // This is a basic approximation
+            return sin(x * 12.9898 + y * 78.233) * 43758.5453;
+            
+        default:
+            return x * x + y * y - 1.0; // Default to circle
+    }
 }
 
-__global__ void cudaMarchingSquares(int grid_size, double min_v, double max_v, CellOutput *d_cell_output)
+__global__ void cudaMarchingSquares(int grid_size, double min_v, double max_v, FunctionID funcId, CellOutput *d_cell_output)
 {
     int i = blockIdx.y * blockDim.y + threadIdx.y; // fila
     int j = blockIdx.x * blockDim.x + threadIdx.x; // columna
@@ -67,10 +108,10 @@ __global__ void cudaMarchingSquares(int grid_size, double min_v, double max_v, C
     double y_sw = cudaFromIndexSpace(i, min_v, max_v, grid_size);
     double y_ne = cudaFromIndexSpace(i + 1, min_v, max_v, grid_size);
 
-    double A = f_device(x_sw, y_sw); // 0 0
-    double B = f_device(x_ne, y_sw); // 1 0
-    double C = f_device(x_ne, y_ne); // 1 1
-    double D = f_device(x_sw, y_ne); // 0 1
+    double A = evaluateFunction(funcId, x_sw, y_sw); // 0 0
+    double B = evaluateFunction(funcId, x_ne, y_sw); // 1 0
+    double C = evaluateFunction(funcId, x_ne, y_ne); // 1 1
+    double D = evaluateFunction(funcId, x_sw, y_ne); // 0 1
 
     double d_bottom = cudaInterp(A, B) * DT;
     double d_right = cudaInterp(B, C) * DT;
@@ -133,8 +174,10 @@ __global__ void cudaMarchingSquares(int grid_size, double min_v, double max_v, C
     d_cell_output[cellIdx] = currentCell;
 }
 
-vector<LineSegment> marching_squares(double (*f)(double, double), int grid_size, double min_v, double max_v)
+
+vector<LineSegment> marching_squares(FunctionID f, int grid_size, double min_v, double max_v)
 {
+    // Determine which function we're using
     int numCells = grid_size * grid_size;
     size_t cellOutputSize = numCells * sizeof(CellOutput);
     CellOutput *d_cell_output;
@@ -156,7 +199,7 @@ vector<LineSegment> marching_squares(double (*f)(double, double), int grid_size,
         (grid_size + threadsPerBlockY - 1) / threadsPerBlockY);
 
     // Ejecutar kernel de marching squares
-    cudaMarchingSquares<<<dimGrid, dimBlock>>>(grid_size, min_v, max_v, d_cell_output);
+    cudaMarchingSquares<<<dimGrid, dimBlock>>>(grid_size, min_v, max_v, f, d_cell_output);
 
     // VERIFICACIÓN CRÍTICA: Comprobar errores del kernel
     cudaError_t kernelError = cudaGetLastError();

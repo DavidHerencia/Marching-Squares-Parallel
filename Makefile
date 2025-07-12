@@ -5,7 +5,7 @@ CXXFLAGS = -std=c++17 -fopenmp
 NVCCFLAGS = -std=c++17 -Xcompiler -fopenmp
 
 # CUDA architecture (adjust based on your GPU)
-CUDA_ARCH = -arch=sm_50
+CUDA_ARCH = -arch=sm_75
 
 # Implementation flags
 IT1_FLAGS = -DIT_NAME="it1"
@@ -137,7 +137,7 @@ benchmark-it4: it4
 	@echo "=== Benchmark IT4 (CUDA) ==="
 	@rm -f benchmark_it4.csv
 	@cd $(BIN_DIR); \
-	for exp in 9 10 11 12 13 14 15 16; do \
+	for exp in 9 10 11 12 13; do \
 		size=$$((2**$$exp)); \
 		echo "Testing it4 (CUDA): grid $$size (2^$$exp)"; \
 		./marching_squares_it4 $$size 400 ../benchmark_it4.csv || true; \

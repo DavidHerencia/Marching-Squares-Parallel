@@ -124,7 +124,7 @@ benchmark-it3: it3
 	@echo "=== Benchmark IT3 ==="
 	@rm -f benchmark_it3.csv
 	@cd $(BIN_DIR); \
-	for threads in 1 2 4 8 16 32 64 128; do \
+	for threads in 1 2 4 8 16 32 48 64; do \
 		for exp in 9 10 11 12 13 14; do \
 			size=$$((2**$$exp)); \
 			echo "Testing it3: $$threads threads, grid $$size (2^$$exp)"; \

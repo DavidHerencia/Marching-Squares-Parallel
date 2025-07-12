@@ -310,7 +310,6 @@ int main(int argc, char *argv[])
     return 0;
 }
 #else 
-
 struct TestCUDAFunction
 {
     std::string name;
@@ -328,8 +327,19 @@ void run_test(const TestCUDAFunction &test, int grid_size, double min_v, double 
     std::cout << "Description: " << test.description << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
-    vector<LineSegment> lines = marching_squares(test.function, grid_size, min_v, max_v);
+    vector<CellOutput> cudaLines = marching_squares(test.function, grid_size, min_v, max_v);
     auto end = std::chrono::high_resolution_clock::now();
+
+    //Now convert CellOutput to LineSegment
+    vector<LineSegment> lines;
+    for (auto &cell : cudaLines)
+    {
+        for (int i = 0; i < cell.line_count; i++)
+        {
+            CudaLineSegment &line = cell.lines[i];
+            lines.push_back({line.x1, line.y1, line.x2, line.y2});
+        }
+    }
 
     std::chrono::duration<double> elapsed = end - start;
     unsigned long long n_lines = lines.size();

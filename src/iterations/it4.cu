@@ -10,23 +10,6 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-struct CudaLineSegment
-{
-    float x1, y1, x2, y2; // Coordenadas de los extremos
-    int id;
-
-    __host__ __device__ CudaLineSegment() : x1(0.0), y1(0.0), x2(0.0), y2(0.0), id(-1) {}
-    __host__ __device__ CudaLineSegment(float a, float b, float c, float d, int segment_id = -1)
-        : x1(a), y1(b), x2(c), y2(d), id(segment_id) {}
-};
-
-struct CellOutput
-{
-    CudaLineSegment lines[2]; // Máximo 2 líneas por celda en marching squares
-
-    int line_count;
-    __host__ __device__ CellOutput() : line_count(0) {}
-};
 
 // Funciones device para Marching Squares
 __device__ float cudaFromIndexSpace(int index, float min_v, float max_v, int grid_size)
@@ -179,7 +162,7 @@ __global__ void cudaMarchingSquares(int grid_size, float min_v, float max_v, Fun
 }
 
 
-vector<LineSegment> marching_squares(FunctionID f, int grid_size, double min_v, double max_v)
+vector<CellOutput> marching_squares(FunctionID f, int grid_size, double min_v, double max_v)
 {
     // Determine which function we're using
     int numCells = grid_size * grid_size;
@@ -191,7 +174,7 @@ vector<LineSegment> marching_squares(FunctionID f, int grid_size, double min_v, 
     if (mallocError != cudaSuccess)
     {
         printf("ERROR CRÍTICO: cudaMalloc falló: %s\n", cudaGetErrorString(mallocError));
-        return std::vector<LineSegment>(); // Retornar vector vacío en caso de error
+        return std::vector<CellOutput>(); // Retornar vector vacío en caso de error
     }
 
     // Configuración de bloques y threads
@@ -211,7 +194,7 @@ vector<LineSegment> marching_squares(FunctionID f, int grid_size, double min_v, 
     {
         printf("ERROR CRÍTICO: Kernel falló: %s\n", cudaGetErrorString(kernelError));
         cudaFree(d_cell_output);
-        return std::vector<LineSegment>();
+        return std::vector<CellOutput>();
     }
 
     cudaDeviceSynchronize();
@@ -222,7 +205,7 @@ vector<LineSegment> marching_squares(FunctionID f, int grid_size, double min_v, 
     {
         printf("ERROR CRÍTICO: Sincronización falló: %s\n", cudaGetErrorString(syncError));
         cudaFree(d_cell_output);
-        return std::vector<LineSegment>();
+        return std::vector<CellOutput>();
     }
 
     std::vector<CellOutput> h_cell_output(numCells);
@@ -233,21 +216,10 @@ vector<LineSegment> marching_squares(FunctionID f, int grid_size, double min_v, 
     {
         printf("ERROR CRÍTICO: cudaMemcpy falló: %s\n", cudaGetErrorString(copyError));
         cudaFree(d_cell_output);
-        return std::vector<LineSegment>();
+        return std::vector<CellOutput>();
     }
-
     cudaFree(d_cell_output);
-
-    std::vector<LineSegment> result;
-    for (int i = 0; i < numCells; ++i)
-    {
-        for (int j = 0; j < h_cell_output[i].line_count; ++j)
-        {
-            const CudaLineSegment &seg = h_cell_output[i].lines[j];
-            result.push_back({seg.x1, seg.y1, seg.x2, seg.y2});
-        }
-    }
-    return result;
+    return h_cell_output;
 }
 
 /*

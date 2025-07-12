@@ -75,7 +75,7 @@ benchmark: it1 it2 it3 it4
 		echo "=== Benchmark $$iteration ==="; \
 		rm -f benchmark_$$iteration.csv; \
 		cd $(BIN_DIR); \
-		for threads in 1 2 4 8 16 32 64 128 256 512; do \
+		for threads in 1 2 4 8 16 32 64; do \
 			for exp in 9 10 11 12 13 14; do \
 				size=$$((2**$$exp)); \
 				echo "Testing $$iteration: $$threads threads, grid $$size (2^$$exp)"; \
@@ -98,7 +98,7 @@ benchmark-it1: it1
 	@echo "=== Benchmark IT1 ==="
 	@rm -f benchmark_it1.csv
 	@cd $(BIN_DIR); \
-	for threads in 1 2 4 8 16 32 64 128; do \
+	for threads in 1 2 4 8 16 32 64; do \
 		for exp in 9 10 11 12 13 14; do \
 			size=$$((2**$$exp)); \
 			echo "Testing it1: $$threads threads, grid $$size (2^$$exp)"; \
@@ -111,7 +111,7 @@ benchmark-it2: it2
 	@echo "=== Benchmark IT2 ==="
 	@rm -f benchmark_it2.csv
 	@cd $(BIN_DIR); \
-	for threads in 1 2 4 8 16 32 64 128; do \
+	for threads in 1 2 4 8 16 32 64; do \
 		for exp in 9 10 11 12 13 14; do \
 			size=$$((2**$$exp)); \
 			echo "Testing it2: $$threads threads, grid $$size (2^$$exp)"; \

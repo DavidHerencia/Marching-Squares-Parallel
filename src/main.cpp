@@ -3,10 +3,11 @@
 #include <cmath>
 #include <algorithm>
 #include <cstdlib>
-#include <vector>
+#include <deque>
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <vector>
 #include <iomanip>
 #include <omp.h>
 #include "marching_squares.hpp"
@@ -176,7 +177,7 @@ void run_test(const TestFunction &test, int grid_size, double min_v, double max_
     std::cout << "Description: " << test.description << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
-    vector<LineSegment> lines = marching_squares(test.function, grid_size, min_v, max_v);
+    deque<LineSegment> lines = marching_squares(test.function, grid_size, min_v, max_v);
     auto end = std::chrono::high_resolution_clock::now();
 
     std::chrono::duration<double> elapsed = end - start;
@@ -327,11 +328,11 @@ void run_test(const TestCUDAFunction &test, int grid_size, double min_v, double 
     std::cout << "Description: " << test.description << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
-    vector<CellOutput> cudaLines = marching_squares(test.function, grid_size, min_v, max_v);
+    deque<CellOutput> cudaLines = marching_squares(test.function, grid_size, min_v, max_v);
     auto end = std::chrono::high_resolution_clock::now();
 
     //Now convert CellOutput to LineSegment
-    vector<LineSegment> lines;
+    deques<LineSegment> lines;
     for (auto &cell : cudaLines)
     {
         for (int i = 0; i < cell.line_count; i++)

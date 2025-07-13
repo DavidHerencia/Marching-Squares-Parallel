@@ -13,8 +13,6 @@ df_x86 = pd.read_csv('results/benchmark_it3_x86.csv')[required_columns]
 
 # Filter out rows where GRIDSIZE is not in [16384, 8192]
 df_x86 = df_x86[df_x86['GRIDSIZE'].isin([16384, 8192])]
-
-df_cuda = pd.read_csv('results/benchmark_it4_cuda.csv')[required_columns]
 df_x86['SPEEDUP'] = float('nan')
 
 for (func,grid),group in df_x86.groupby(['FUNCTION', 'GRIDSIZE']):
@@ -39,7 +37,14 @@ for grid, grid_group in df_x86.groupby('GRIDSIZE'):
                 color=color_dict[func])
     
     processors_range = grid_group['PROCESSORS'].unique()
-    plt.plot(processors_range, processors_range, 
+    grid_size = grid_group['GRIDSIZE'].values[0]
+    #O( n**2 / (n**2 / P + P))
+    
+    # Theoretical speedup line
+    theoretical_speedup =  grid_size**2 / (grid_size**2 / processors_range + processors_range)
+    
+    
+    plt.plot(processors_range, theoretical_speedup, 
             linestyle='--', color='black', linewidth=2, alpha=0.7, 
             label='Theoretical Speedup')
     

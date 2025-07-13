@@ -3,15 +3,15 @@
 #include <omp.h>
 using namespace std;
 
-vector<LineSegment> marching_squares(double (*f)(double, double), int grid_size, double min_v, double max_v)
+deque<LineSegment> marching_squares(double (*f)(double, double), int grid_size, double min_v, double max_v)
 {
     const double DT = (abs(min_v - max_v)) / (grid_size);
-    std::vector<std::vector<LineSegment>> thread_results;
-    std::vector<LineSegment> lines;
+    vector<deque<LineSegment>> thread_results;
+    deque<LineSegment> lines;
 
     #pragma omp parallel
     {
-        vector<LineSegment> local_lines; 
+        deque<LineSegment> local_lines; 
 
         auto addLine = [&local_lines](double x1, double y1, double x2, double y2)
         {

@@ -1,4 +1,4 @@
-#include <vector>
+#include <deque>
 #include <string>
 #include <iostream>
 #include <algorithm>
@@ -64,7 +64,7 @@ void draw_line(unsigned char *img_buffer, int img_w, int img_h, int x1, int y1, 
     }
 }
 
-void render_to_image(const vector<LineSegment> &lines, const string &filename, double min_v, double max_v, int img_w, int img_h)
+void render_to_image(const deque<LineSegment> &lines, const string &filename, double min_v, double max_v, int img_w, int img_h)
 {
     // Create an image buffer USING a library like stb_image or similar
     unsigned char *img_buffer = new unsigned char[img_w * img_h * 3]; // RGB image

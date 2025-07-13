@@ -1,4 +1,5 @@
 #pragma once
+#include <deque>
 #include <vector>
 using namespace std;
 
@@ -18,7 +19,7 @@ struct LineSegment {
 
 
 #ifndef CUDA_IMPLEMENTATION
-    vector<LineSegment> marching_squares(double (*f)(double, double), int grid_size, double min_v, double max_v);
+    deque<LineSegment> marching_squares(double (*f)(double, double), int grid_size, double min_v, double max_v);
 #else
     #ifndef __CUDACC__
     #define __host__

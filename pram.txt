@@ -1,23 +1,19 @@
 MARCHING SQUARES - PRAM:
----
 INPUT: f(x,y), grid_size, min_v, max_v
 OUTPUT: set of lines R, where R = { ((x1, y1), (x2, y2)) ∈ ℝ² × ℝ² | f(x1, y1) = f(x2, y2) = c, with c ∈ [min_v, max_v] }
----
 
-//Denote using math a set that contains sub sets of 2 points (line segments)
+interpolate(val1, val2) := (-val1) / (val2 - val1)
 DT = (max_v - min_v) / grid_size // Delta for interpolation
-lines = {} // Global result set
-
-//Function to add a line segment tuple to the result set
-addLine((P1, P2)) critical_section { 
-    lines = lines ∪ {(P1, P2)}
-}
-
-//Interpolation function to find zero-crossing parameter
-interp(val1, val2) := -val1 / (val2 - val1)
+line_buffer[1...p] = {} //Define global buffer
 
 for i=1,..,grid_size pardo{
     for j=1,..,grid_size{
+
+        //Function to add a line segment tuple to the result set
+        addLine((P1, P2))  { 
+            line_buffer[i] = line_buffer[i] ∪ {(P1, P2)}
+        }
+
         //COMPUTE the corners of the grid cell
         x1 = min_v + i * (max_v - min_v) / grid_size;
         y1 = min_v + j * (max_v - min_v) / grid_size;
@@ -32,10 +28,10 @@ for i=1,..,grid_size pardo{
         case = (D > 0) << 3 | (C > 0) << 2 | (B > 0) << 1 | (A > 0);
 
         //Interpolate the distances to the zero level
-        d_bottom = interp(A, B) * DT;
-        d_right = interp(B, C) * DT;
-        d_top = interp(C, D) * DT;
-        d_left = interp(D, A) * DT;
+        d_bottom = interpolate(A, B) * DT;
+        d_right = interpolate(B, C) * DT;
+        d_top = interpolate(C, D) * DT;
+        d_left = interpolate(D, A) * DT;
 
         //critical_section to add lines
         switch case {
@@ -88,6 +84,11 @@ for i=1,..,grid_size pardo{
                 break;
         }
     }
-
-    return lines
 }
+
+R = {}
+for i=1,..,grid_size {
+    R = R ∪ line_buffer[i] 
+}
+
+return R

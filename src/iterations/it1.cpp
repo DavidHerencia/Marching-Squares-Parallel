@@ -3,9 +3,9 @@
 #include <omp.h>
 using namespace std;
 
-vector<LineSegment> marching_squares(double (*f)(double, double), int grid_size, double min_v, double max_v)
+deque<LineSegment> marching_squares(double (*f)(double, double), int grid_size, double min_v, double max_v)
 {
-    vector<LineSegment> lines; // Buffer to store line segments
+    deque<LineSegment> lines; // Buffer to store line segments
     const double DT = (abs(min_v - max_v)) / (grid_size);
 
     auto addLine = [&lines](double x1, double y1, double x2, double y2)

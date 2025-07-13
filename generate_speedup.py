@@ -8,6 +8,15 @@ SAVE_DIR = 'results/graphs/'
 
 os.makedirs(SAVE_DIR, exist_ok=True)
 plt.style.use('seaborn-v0_8')
+plt.rcParams.update({
+    "font.size": 18,
+    "axes.titlesize": 28,
+    "axes.labelsize": 24,
+    "xtick.labelsize": 18,
+    "ytick.labelsize": 18,
+    "legend.fontsize": 14,
+    "figure.titlesize": 32
+})
 
 # Ensure expected columns exist
 required_columns = ['FUNCTION', 'PROCESSORS', 'TIME', 'GRIDSIZE', 'FLOPS']
@@ -31,7 +40,7 @@ color_dict = {func: color_map(i / len(function_list)) for i, func in enumerate(f
 
 # Group by grid size and plot all functions in the same graph
 for grid, grid_group in df_x86.groupby('GRIDSIZE'):
-    plt.figure(figsize=(12, 8))
+    plt.figure(figsize=(14, 10)) 
     
     for func, func_group in grid_group.groupby('FUNCTION'):
         plt.plot(func_group['PROCESSORS'], func_group['SPEEDUP'], 
@@ -54,13 +63,18 @@ for grid, grid_group in df_x86.groupby('GRIDSIZE'):
             label='Theoretical speedup O(n²/((n²/p)+p))')
     
     plt.grid(True, alpha=0.5, linestyle='-', linewidth=0.8, color='gray')
-    plt.title(f'Speedup Comparison by Function - Grid Size {grid}x{grid}', fontsize=14, fontweight='bold')
-    plt.xlabel('Threads (p)', fontsize=12)
-    plt.ylabel('Speedup', fontsize=12)
+    plt.title(f'Speedup Comparison by Function - Grid Size {grid}x{grid}', fontweight='bold')
+    plt.xlabel('Threads (p)')
+    plt.ylabel('Speedup')
+    plt.xscale('log',base=2)
+    plt.yscale('log',base=10)
+    
+
     plt.xticks(processors_range)
     plt.grid(True, alpha=0.3)
-    plt.legend(loc='upper left', fontsize=12, frameon=True, fancybox=True, shadow=True)
+    plt.legend(loc='upper left', frameon=True, fancybox=True, shadow=True)
     plt.tight_layout(pad=2.0)
     
     plt.savefig(SAVE_DIR + f'speedup_comparison_grid_{grid}.png', dpi=300, bbox_inches='tight')
+
     plt.close()

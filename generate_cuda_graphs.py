@@ -9,6 +9,16 @@ os.makedirs('results/graphs', exist_ok=True)
 
 # Set matplotlib style for better looking plots
 plt.style.use('seaborn-v0_8')
+plt.rcParams.update({
+    "font.size": 18,
+    "axes.titlesize": 28,
+    "axes.labelsize": 24,
+    "xtick.labelsize": 18,
+    "ytick.labelsize": 18,
+    "legend.fontsize": 14,
+    "figure.titlesize": 32
+})
+
 
 # Load all benchmark data
 print("Loading benchmark data...")
@@ -84,13 +94,12 @@ for function in worst_functions:
                     alpha=0.8)
     
     # Chart configuration with improved styling
-    plt.xlabel('Grid Size (N × N)', fontsize=14, fontweight='bold')
-    plt.ylabel('Execution Time (seconds)', fontsize=14, fontweight='bold')
-    plt.title(f'CPU vs CUDA GPUs - Performance Comparison: {function}', 
-              fontsize=16, fontweight='bold', pad=20)
+    plt.xlabel('Grid Size (N x N)', fontweight='bold')
+    plt.ylabel('Execution Time (seconds)', fontweight='bold')
+    plt.title(f'CPU vs CUDA GPUs - Performance Comparison: {function}', fontweight='bold', pad=20)
     
     # Use linear scale for X-axis to show exact grid sizes clearly
-    plt.xscale('linear')
+    plt.xscale('log')
     plt.yscale('log')  # Keep Y-axis logarithmic for better time visualization
     
     # Set specific X-axis ticks to show all grid sizes clearly
@@ -99,7 +108,7 @@ for function in worst_functions:
     
     # Enhanced grid styling - cleaner appearance
     plt.grid(True, alpha=0.5, linestyle='-', linewidth=0.8, color='gray')
-    plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=12, 
+    plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', 
               frameon=True, fancybox=True, shadow=True)
     
     # Adjust layout and save
@@ -112,52 +121,6 @@ for function in worst_functions:
     plt.close()
     
     print(f"Generated: {filename}")
-
-# Create combined comparison graph with subplots
-fig, axes = plt.subplots(1, 2, figsize=(24, 10))
-
-for i, function in enumerate(worst_functions):
-    ax = axes[i]
-    
-    # Filter data for the specific function
-    func_data = all_data[all_data['FUNCTION'] == function]
-    
-    # Plot each GPU type in the subplot
-    for gpu_type in gpu_types:
-        gpu_data = func_data[func_data['GPU_TYPE'] == gpu_type].sort_values('GRIDSIZE')
-        
-        if len(gpu_data) > 0:
-            ax.plot(gpu_data['GRIDSIZE'], gpu_data['TIME'], 
-                   marker=marker_dict[gpu_type], linewidth=3, markersize=8, 
-                   color=color_dict[gpu_type], label=gpu_type, 
-                   linestyle='-' if 'CPU' in gpu_type else '--',
-                   alpha=0.8)
-    
-    # Subplot configuration
-    ax.set_xlabel('Grid Size (N × N)', fontsize=12, fontweight='bold')
-    ax.set_ylabel('Execution Time (seconds)', fontsize=12, fontweight='bold')
-    ax.set_title(f'{function}', fontsize=14, fontweight='bold')
-    
-    # Use linear scale for X-axis, logarithmic for Y-axis
-    ax.set_xscale('linear')
-    ax.set_yscale('log')
-    
-    # Set specific X-axis ticks for this subplot
-    func_gridsizes = sorted(func_data['GRIDSIZE'].unique())
-    ax.set_xticks(func_gridsizes)
-    ax.set_xticklabels([f'{int(size)}' for size in func_gridsizes], rotation=45)
-    
-    # Enhanced grid styling for subplots
-    ax.grid(True, alpha=0.5, linestyle='-', linewidth=0.8, color='gray')
-    ax.legend(fontsize=10, frameon=True, fancybox=True, shadow=True)
-
-# Overall title and styling
-plt.suptitle('CPU vs All CUDA GPUs Performance Comparison - Worst Performing Functions', 
-             fontsize=18, fontweight='bold', y=0.98)
-plt.tight_layout(pad=3.0)
-plt.savefig('results/graphs/cpu_vs_all_gpus_comparison_worst_functions.png', 
-            dpi=300, bbox_inches='tight')
-plt.close()
 
 print("\n" + "="*60)
 print("PERFORMANCE COMPARISON SUMMARY")

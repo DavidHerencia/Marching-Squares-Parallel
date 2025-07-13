@@ -7,6 +7,15 @@ SAVE_DIR = 'results/graphs/'
 
 os.makedirs(SAVE_DIR, exist_ok=True)
 plt.style.use('seaborn-v0_8')
+plt.rcParams.update({
+    "font.size": 18,
+    "axes.titlesize": 28,
+    "axes.labelsize": 24,
+    "xtick.labelsize": 18,
+    "ytick.labelsize": 18,
+    "legend.fontsize": 14,
+    "figure.titlesize": 32
+})
 
 # Ensure expected columns exist
 required_columns = ['FUNCTION', 'PROCESSORS', 'TIME', 'GRIDSIZE', 'FLOPS']
@@ -21,7 +30,8 @@ color_dict = {func: color_map(i / len(function_list)) for i, func in enumerate(f
 
 # Group by grid size and plot all functions in the same graph
 for grid, grid_group in df_x86.groupby('GRIDSIZE'):
-    plt.figure(figsize=(12, 8))
+    plt.figure(figsize=(14, 10)) 
+    
     
     for func, func_group in grid_group.groupby('FUNCTION'):
         plt.plot(func_group['PROCESSORS'], func_group['TIME'], 
@@ -46,16 +56,15 @@ for grid, grid_group in df_x86.groupby('GRIDSIZE'):
         #        label=f'{func} (Ideal)')
     
     plt.grid(True, alpha=0.5, linestyle='-', linewidth=0.8, color='gray')
-    plt.title(f'Execution Time vs Processors - Grid Size {grid}x{grid}', fontsize=14, fontweight='bold')
-    plt.xlabel('Threads (p)', fontsize=12)
-    plt.ylabel('Time (seconds)', fontsize=12)
+    plt.title(f'Execution Time vs Processors - Grid Size {grid}x{grid}', fontweight='bold')
+    plt.xlabel('Threads (p)')
+    plt.xscale('log',base=2)
+    plt.ylabel('Time (seconds)')
     plt.xticks(processors_range)
-    plt.yscale('log')  # Log scale for better visualization of time differences
     plt.grid(True, alpha=0.3)
-    plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=10, frameon=True)
-    plt.tight_layout(pad=8.0)
-    
-    plt.savefig(SAVE_DIR + f'time_vs_processors_grid_{grid}.png', dpi=300, bbox_inches='tight')
+    plt.legend(loc='upper right', frameon=True, fancybox=True, shadow=True)
+    plt.tight_layout()
+    plt.savefig(f'{SAVE_DIR}time_vs_processors_grid_{grid}.png', dpi=300, bbox_inches='tight')
     plt.close()
 
 print("Time vs Processors graphs generated successfully!")

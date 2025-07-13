@@ -153,6 +153,7 @@ generate_graphs:
 	python generate_cuda_graphs.py
 	python generate_time_vs_p.py
 	python generate_flops_vs_p.py
+	python generate_time_vs_p.py
 
 help:
 	@echo "Makefile commands:"

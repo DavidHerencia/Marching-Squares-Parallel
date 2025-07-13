@@ -124,7 +124,7 @@ benchmark-it3: it3
 	@echo "=== Benchmark IT3 ==="
 	@rm -f benchmark_it3.csv
 	@cd $(BIN_DIR); \
-	for threads in 1 2 4 8 16 32 48 64; do \
+	for threads in 1 2 4 8 16; do \
 		for exp in 9 10 11 12 13 14; do \
 			size=$$((2**$$exp)); \
 			echo "Testing it3: $$threads threads, grid $$size (2^$$exp)"; \
@@ -147,6 +147,12 @@ benchmark-it4: it4
 # Clean
 clean:
 	rm -rf $(BUILD_DIR) $(BIN_DIR) *.csv
+
+generate_graphs:
+	python generate_speedup.py
+	python generate_cuda_graphs.py
+	python generate_time_vs_p.py
+	python generate_flops_vs_p.py
 
 help:
 	@echo "Makefile commands:"
@@ -171,4 +177,4 @@ help:
 	@echo "  - For it1-it3: g++ with OpenMP support"
 	@echo "  - For it4: NVIDIA CUDA Toolkit with nvcc"
 
-.PHONY: all it1 it2 it3 it4 run run-it1 run-it2 run-it3 run-it4 benchmark benchmark-it1 benchmark-it2 benchmark-it3 benchmark-it4 clean help
+.PHONY: all it1 it2 it3 it4 run run-it1 run-it2 run-it3 run-it4 benchmark benchmark-it1 benchmark-it2 benchmark-it3 benchmark-it4 clean help generate_graphs

@@ -14,7 +14,7 @@ plt.style.use('seaborn-v0_8')
 required_columns = ['FUNCTION', 'PROCESSORS', 'TIME', 'GRIDSIZE', 'FLOPS'] #FLOPS should be FLOP
 df_x86 = pd.read_csv('results/benchmark_it3_x86.csv')[required_columns]
 # Filter out rows where GRIDSIZE is not in [16384, 8192]
-df_x86 = df_x86[df_x86['GRIDSIZE'].isin([16384, 8192])]
+#df_x86 = df_x86[df_x86['GRIDSIZE'].isin([16384, 8192])]
 
 df_x86['REAL_FLOPS'] = df_x86['FLOPS'] / df_x86['TIME']
 
@@ -37,6 +37,8 @@ for grid, grid_group in df_x86.groupby('GRIDSIZE'):
     plt.xlabel('Threads (p)', fontsize=12)
     plt.ylabel('FLOPS (in billions)', fontsize=12)
     plt.yscale('log')
+    plt.grid(True, alpha=0.5, linestyle='-', linewidth=0.8, color='gray')
+
     plt.xticks(func_group['PROCESSORS'])
     plt.grid(True, alpha=0.3)
     plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=10, frameon=True)

@@ -19,9 +19,9 @@ df_x86 = pd.read_csv('results/benchmark_it3_x86.csv')[required_columns]
 cpu_best = df_x86[df_x86['PROCESSORS'] == 48]
 
 # Load CUDA data from all GPUs
-df_cuda_a100 = pd.read_csv('results/benchmark_it4-cuda_A100.csv')[required_columns]
-df_cuda_a6000 = pd.read_csv('results/benchmark_it4-cuda_A6000.csv')[required_columns]
-df_cuda_t4 = pd.read_csv('results/benchmark_it4-cuda_T4.csv')[required_columns]
+df_cuda_a100 = pd.read_csv('results/benchmark_it4_cuda_a100.csv')[required_columns]
+df_cuda_a6000 = pd.read_csv('results/benchmark_it4_cuda_a6000.csv')[required_columns]
+df_cuda_t4 = pd.read_csv('results/benchmark_it4_cuda_t4.csv')[required_columns]
 
 # Add GPU type identifier
 cpu_best = cpu_best.copy()

@@ -137,7 +137,7 @@ benchmark-it4: it4
 	@echo "=== Benchmark IT4 (CUDA) ==="
 	@rm -f benchmark_it4.csv
 	@cd $(BIN_DIR); \
-	for exp in 9 10 11 12 13; do \
+	for exp in 9 10 11 12 13 14; do \
 		size=$$((2**$$exp)); \
 		echo "Testing it4 (CUDA): grid $$size (2^$$exp)"; \
 		./marching_squares_it4 $$size 400 ../benchmark_it4.csv || true; \

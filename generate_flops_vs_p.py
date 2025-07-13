@@ -16,7 +16,6 @@ df_x86 = pd.read_csv('results/benchmark_it3_x86.csv')[required_columns]
 # Filter out rows where GRIDSIZE is not in [16384, 8192]
 df_x86 = df_x86[df_x86['GRIDSIZE'].isin([16384, 8192])]
 
-df_cuda = pd.read_csv('results/benchmark_it4_cuda.csv')[required_columns]
 df_x86['REAL_FLOPS'] = df_x86['FLOPS'] / df_x86['TIME']
 
 

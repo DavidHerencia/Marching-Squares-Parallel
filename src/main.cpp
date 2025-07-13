@@ -328,11 +328,11 @@ void run_test(const TestCUDAFunction &test, int grid_size, double min_v, double 
     std::cout << "Description: " << test.description << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
-    deque<CellOutput> cudaLines = marching_squares(test.function, grid_size, min_v, max_v);
+    vector<CellOutput> cudaLines = marching_squares(test.function, grid_size, min_v, max_v);
     auto end = std::chrono::high_resolution_clock::now();
 
     //Now convert CellOutput to LineSegment
-    deques<LineSegment> lines;
+    deque<LineSegment> lines;
     for (auto &cell : cudaLines)
     {
         for (int i = 0; i < cell.line_count; i++)

@@ -7,8 +7,7 @@
 
 Este repositorio contiene una implementación de alto rendimiento del algoritmo **Marching Squares**, con un enfoque en la paralelización para arquitecturas multinúcleo (OpenMP) y de propósito general sobre GPU (CUDA). El proyecto no solo implementa el algoritmo, sino que también proporciona un análisis teórico y empírico de su rendimiento y escalabilidad.
 
-![Galería de Resultados](https-github.com-DavidHerencia-Marching-Squares-Parallel-raw-main-results-images-it3_p16_g1024_spiral_contour.png)
-*(Ejemplo: Función Espiral con grid 1024x1024)*
+
 
 ---
 
@@ -66,7 +65,7 @@ El rendimiento de este algoritmo se analizó teórica y empíricamente, obtenien
 
 El tiempo de ejecución paralelo (`T_p`) se modeló considerando tanto el trabajo computacional como el overhead de la paralelización:
 
-\[ T_p = \frac{n^2}{p} + p \]
+$T_p = \frac{n^2}{p} + p $
 
 Donde `n` es la dimensión de la grilla y `p` es el número de procesadores. El término `+p` representa el costo adicional por la sincronización y la agregación de resultados.
 
@@ -74,7 +73,7 @@ Donde `n` es la dimensión de la grilla y `p` es el número de procesadores. El 
 
 A partir de este modelo, la eficiencia paralela (`E`) es:
 
-\[ E = \frac{T_s}{p \cdot T_p} = \frac{n^2}{p(\frac{n^2}{p} + p)} = \frac{1}{1 + \frac{p^2}{n^2}} \]
+$E = \frac{T_s}{p \cdot T_p} = \frac{n^2}{p(\frac{n^2}{p} + p)} = \frac{1}{1 + \frac{p^2}{n^2}}$
 
 Para mantener una eficiencia constante (el objetivo de la escalabilidad débil), la relación $\frac{p^2}{n^2}$ debe ser constante. Esto nos lleva a una conclusión clave del modelo:
 
@@ -90,7 +89,7 @@ Las imágenes generadas se almacenan automáticamente en `results/images/`.
 
 | Checkerboard | Tangente | Cueva (Noise) |
 | :----------: | :------: | :-----------: |
-| ![Checkerboard](https-github.com-DavidHerencia-Marching-Squares-Parallel-raw-main-results-images-it3_p16_g1024_checkerboard_contour.png) | ![Tangent](https-github.com-DavidHerencia-Marching-Squares-Parallel-raw-main-results-images-it3_p16_g1024_tangent_contour.png) | ![Cave Noise](https-github.com-DavidHerencia-Marching-Squares-Parallel-raw-main-results-images-it3_p16_g1024_cave_contour.png) |
+| ![Checkerboard](https://github.com/DavidHerencia/Marching-Squares-Parallel/blob/main/results/images/it3_p64_g1024_checkerboard_contour.png) | ![Tangent](https://github.com/DavidHerencia/Marching-Squares-Parallel/blob/main/results/images/it3_p64_g16384_tangent_contour.png) | ![Cave Noise](https://github.com/DavidHerencia/Marching-Squares-Parallel/blob/main/results/images/it3_p64_g8192_cave_contour.png) |
 
 ---
 
